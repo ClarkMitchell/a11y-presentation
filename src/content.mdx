@@ -1,0 +1,222 @@
+## Types of alternative technologies
+
+### Input
+
+- Screen Reader
+- Head Pointer
+- Motion / Eye Tracking
+- Large Print keyboard
+- Speech Input Software
+- Joystick, Gamepad, Trackball
+- Single switch
+
+### Output
+
+- Screen Reader
+  - VoiceOver (MacOS, iOS), JAWS, NVDA (Windows), TalkBack (Android)
+- Screen Magnifiers
+- Refreshable Braille Display
+  https://upload.wikimedia.org/wikipedia/commons/4/4a/Plage-braille.jpg
+
+---
+
+## Provide an equivalent experience
+
+Sometimes an accessible experience is not always equivalent.
+
+<h2 className="left">
+  <span aria-hidden>A11y</span>
+  <span className="sr-only">Accessibility</span> in React <span aria-hidden>🦾</span>
+</h2>
+
+---
+
+## Aria should be your last choice.
+
+Incorrect aria is often worse than no aria
+
+- Use Semantic HTML.
+- Inputs should have labels.
+- Question the design.
+
+---
+
+## Semantic HTML
+
+### Headings
+
+Don't use headings to match font sizes. Think of headings like a table of contents.
+
+A Page should have a single h1, and then each level within should be 1 higher heading.
+
+```
+h1
+├── h2
+│   └── h3
+├── h2
+│   └── h3
+├── h2
+└── h2
+    └── h3
+        └── h4
+```
+
+### Tables
+
+Use tables for data tables.
+
+<table>
+  <thead>
+    <tr>
+      <th>One</th>
+      <th>Two</th>
+      <th>Three</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>a</td>
+      <td>b</td>
+      <td>c</td>
+    </tr>
+    <tr>
+      <td>d</td>
+      <td>e</td>
+      <td>f</td>
+    </tr>
+  </tbody>
+</table>
+
+### Use landmarks instead of div
+
+- main
+- section
+- article
+- nav
+- header
+- footer
+
+---
+
+## Inputs / Controls should include a label
+
+Will sighted users understand the purpose of this button without a label?
+
+import EditIcon from "./components/EditIcon";
+
+<button aria-label="Edit">
+  <EditIcon />
+</button>
+
+## Implicit vs Explicit label
+
+<label>
+  First&nbsp;
+  <input type="checkbox" />
+</label>
+<br />
+<label htmlFor="checkbox">Second</label>&nbsp;
+<input type="checkbox" id="checkbox" />
+
+---
+
+## Design impacts accessibility.
+
+<button>Click Me</button>
+
+---
+
+## Focus
+
+### Managing focus state in forms
+
+usually involves Refs, may require tabindex=-1
+
+Example: https://www.etonline.com/
+
+Tests: https://github.com/cbsi-ctd/et-frontend/blob/beta/components/newsletterSignup/newsletterSignup.test.js
+
+### Form.onSubmit > Button.onClick
+
+<form
+  onSubmit={(e) => {
+    alert("yay");
+    e.preventDefault();
+  }}
+>
+  <fieldset>
+    <label>
+      Enter Email!
+      <input type="email" aria-label="Email" />
+    </label>
+    <button type="submit">Submit</button>
+  </fieldset>
+</form>
+
+<div className="flex">
+  <div className="flex">
+    <label>
+      Enter Email!
+      <input
+        type="email"
+        aria-label="Email"
+        onKeyPress={() => alert("Do logic to check for Enter")}
+      />
+    </label>
+    <button onClick={() => alert("boo")}>Submit</button>
+  </div>
+</div>
+
+### Trap Focus for modals
+
+This is hard, don't code your own modal, use something like Reach UI or React Aria
+
+import Modal from "./components/Modal";
+
+<Modal />
+
+MDN Article on managing focus in React
+https://developer.mozilla.org/en-US/docs/Learn/Tools_and_testing/Client-side_JavaScript_frameworks/React_accessibility
+
+Use WAI-ARIA authoring practices for interactive components.
+https://www.w3.org/TR/wai-aria-practices-1.1/
+
+---
+
+## Client side routing (sucks)
+
+- Gatsby study https://www.gatsbyjs.com/blog/2019-07-11-user-testing-accessible-client-routing/
+- Issue in Next https://github.com/vercel/next.js/issues/7681
+- Next resolution https://github.com/vercel/next.js/pull/20428
+  - handles this by giving focus to the first h1, falling back to a main, and lastly to body.
+- Marcy Sutton comments 🔥 https://github.com/vercel/next.js/pull/20428#issuecomment-759105570
+- Recommended approach: Announce Page with Aria live region, put focus on skip link https://www.gatsbyjs.com/blog/2019-07-11-user-testing-accessible-client-routing/#recommendations-finding-common-ground
+  - Skip to Nav https://github.com/marcysutton/gatsby-a11y-workshop/tree/master/examples/client-side-routing
+  - Skip to Content https://shopify-demo.gatsbyjs.com/products/sports/practical-steel-coat/
+    - Source https://github.com/gatsbyjs/gatsby-starter-shopify/blob/main/src/components/skip-nav.jsx
+- Kitty Giraudel SPA Title Announcer (React Rounter / React Helmet) https://kittygiraudel.com/2020/01/15/accessible-title-in-a-single-page-react-application/
+- React breaks Aria Live Regions, use https://www.npmjs.com/package/react-aria-live
+  - https://almerosteyn.com/2017/09/aria-live-regions-in-react
+
+---
+
+## Extras
+
+### Tools
+
+- eslint-plugin-jsx-a11y https://www.npmjs.com/package/eslint-plugin-jsx-a11y
+- Jest Axe https://github.com/nickcolley/jest-axe
+- dev tools accessibility pane
+- VoiceOver https://support.apple.com/guide/voiceover-guide/welcome/web
+- Axe chrome extension https://chrome.google.com/webstore/detail/axe-devtools-web-accessib/lhdoppojpmngadmnindnejefpokejbdd
+- Wave chrome extension https://chrome.google.com/webstore/detail/wave-evaluation-tool/jbbplnpkjmmeebjpijfedlgcdilocofh
+
+### Books
+
+- Inclusive Components http://book.inclusive-components.design
+- Inclusive Design Patterns https://www.smashingmagazine.com/printed-books/inclusive-front-end-design-patterns/
+
+### Video
+
+- What is Aria even for? https://briefs.video/videos/what-is-aria-even-for/
+- Is Progressive Enhancement Dead Yet? https://briefs.video/videos/is-progressive-enhancement-dead-yet/
